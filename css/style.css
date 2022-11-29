@@ -1,0 +1,264 @@
+body{
+    margin: 0;
+    padding: 0;
+    background: url("../images/background.jpg");
+    background-size: cover;
+    background-position: center;
+    font-family: sans-serif;
+}
+
+.avatar{
+ /* width: 100px;
+    height: 100px;	*/
+    position: absolute;
+    top: -50px;
+    left: calc(50% - 50px);
+}
+
+
+.loginbox{
+    width: 320px;
+    height: 420px;
+    background: #000;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    box-sizing: border-box;
+    padding: 70px 30px;
+}
+
+header{
+	background-color: black;	
+	width: 100%;
+}
+
+main-header{
+	width: 100%;
+}
+
+element.style {
+    position: absolute;
+    top: 164px;
+    left: 25px;
+    z-index: 1;
+    display: block;
+}
+
+
+table {
+    display: table;
+	table-layout: auto;
+    border-collapse: separate;
+    border-spacing: 1px;
+    border-color: grey;
+	color: #2874A6; 
+	position: relative;
+	display: table-cell;
+	padding: 10px;
+	width: 100%;
+}
+
+.myTable { 
+  width: 100%;
+  text-align: center;
+  background-color: transparent;
+  border-collapse: collapse; 
+  }
+  
+.myTable th { 
+  background-color: #2874A6;
+  color: white; 
+  padding: 10px;
+  border: 1px solid #2874A6; 
+  }
+  
+.myTable td { 
+  padding: 10px;
+  border: 1px solid #2874A6; 
+  }
+ 
+a{
+	color: #2874A6; 
+	padding-right: 6px;
+	padding-bottom: 4px;
+	text-decoration: none;
+}
+
+h1{
+    margin: 0;
+    padding: 0 0 20px;
+    text-align: center;
+    font-size: 22px;
+}
+
+h2{
+    margin: 0;
+	padding: 20px;
+    text-align: center;
+    font-size: 22px;
+	color: #2874A6; 	
+}
+
+.loginbox p{
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+.loginbox input{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.loginbox input[type="text"], input[type="password"]
+{
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: #fff;
+    font-size: 16px;
+}
+.loginbox input[type="submit"]
+{
+    border: none;
+    outline: none;
+    height: 40px;
+    background: #2874A6;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 20px;
+}
+
+.loginbox input[type="submit"]:hover
+{
+    cursor: pointer;
+    background: #66b2ff;
+    color: #000;
+}
+
+.loginbox a{
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: darkgrey;
+}
+
+.loginbox a:hover
+{
+    color: darkgrey;
+}
+
+.user-footer{
+	text-align: right;
+	padding-left: 10px;
+	padding-bottom: 5px; 
+}
+
+.float_center {
+	float: right;
+	position: relative;
+	left: -50%; /* or right 50% */
+	text-align: left;
+}
+
+.float_center > .child {
+  position: relative;
+  left: 50%;
+}
+
+.clear {
+  clear:both;
+}
+
+#container {
+  width: 500px;
+  margin: 20px auto 0 auto;
+}
+
+ul {
+  list-style-type: none;
+  margin:0;
+  padding:10px 0;
+}
+
+ul li {
+  float: left;
+  list-style-type: none;
+  margin: 0 6px;
+}
+
+ul a {
+  display: block;
+  height: 50px;
+  line-height: 50px;
+  text-decoration: none;
+  color: #2874A6;
+  font-weight: bold;
+  padding: 0px 50px;
+  background-color: #ffffff;
+}
+
+.btn {
+  background-color: white;
+  color: #2874A6;
+  height: 50px;
+  /*border-radius: .25rem;	*/
+  line-height: 50px;
+  font-weight: bold;
+  padding:  0px 50px;
+  font-size: 16px;
+  border: none;
+  outline: none;
+}
+
+.dropdown {
+  display: inline-block;
+  position: right;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  text-align: center;
+  background-color: white;
+  min-width: 120px; 
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  font-size: 12px;
+  padding: 5px 5px;
+  text-decoration: none;
+  display: block; 
+}
+
+.dropdown-content a:hover {background-color: #ddd}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.btn:hover, .dropdown:hover .btn {
+  background-color: #a6ccf2;
+}
+
+.form-horizontal{
+  position: center;
+}
+
+.datepicker{
+	background-color: white;
+}
+
+input[type="time" i] {
+    display: -webkit-inline-flex;
+    cursor: default;
+    overflow: hidden;
+	padding: none;
+	font-family: sans-serif;
+} 
