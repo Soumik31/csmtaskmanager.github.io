@@ -1,8 +1,7 @@
 -- CSM Task Manager - Full Database Setup with Demo Data
 -- Run this file in phpMyAdmin or MySQL CLI to set up the project
 
-CREATE DATABASE IF NOT EXISTS `csm_task_creater` DEFAULT CHARACTER SET latin1;
-USE `csm_task_creater`;
+-- Database is created automatically by Docker via MYSQL_DATABASE env var
 
 -- --------------------------------------------------------
 -- Table: task
