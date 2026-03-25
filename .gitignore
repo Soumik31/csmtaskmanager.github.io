@@ -1,0 +1,14 @@
+# Local config overrides
+config.local.php
+
+# Composer
+vendor/
+composer.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

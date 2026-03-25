@@ -1,6 +1,7 @@
 <?php
-$con=mysqli_connect('localhost','root','') or die('Not Connected');
+require_once __DIR__ . '/config.php';
 
-mysqli_select_db($con,'csm_task_creater') or die('No Database Found'); //task is database name
-?>
-
+$con = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+if (!$con) {
+    die('Database connection failed: ' . mysqli_connect_error());
+}

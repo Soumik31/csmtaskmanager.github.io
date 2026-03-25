@@ -6,18 +6,7 @@
 
 <?php
 
-			$con = mysqli_connect("127.0.0.1","root","");
-				 if(!$con){
-					   die("Database Connection failed".mysql_error());
-			}else{
-			$db_select = mysqli_select_db($con, "csm_task_creater");
-				 if(!$db_select){
-					   die("Database selection failed".mysql_error());
-			}
-			else{ 
-
-			    } 
-			}
+			require_once __DIR__ . '/conn.php';
 			
 			
 			$q = " SELECT * FROM task WHERE stat = 'Pending'";	

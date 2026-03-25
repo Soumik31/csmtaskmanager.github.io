@@ -21,7 +21,8 @@
 	// function to connect and execute the query
 	function filterTable($query)
 	{
-		$connect = mysqli_connect("127.0.0.1","root","", "csm_task_creater");
+		require __DIR__ . '/config.php';
+		$connect = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 		$filter_Result = mysqli_query($connect, $query);
 		return $filter_Result;
 	}

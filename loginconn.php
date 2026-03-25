@@ -1,4 +1,7 @@
 <?php
-$con=mysqli_connect("localhost","root","","csm_task_creater"); //login is database containing username and password table
+require_once __DIR__ . '/config.php';
 
-?>
+$con = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+if (!$con) {
+    die('Database connection failed: ' . mysqli_connect_error());
+}
