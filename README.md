@@ -71,23 +71,6 @@ http://localhost/csm-task-manager/
 
 ---
 
-## Hosting on a PHP Server
-
-GitHub Pages only serves static files and **cannot run PHP**. To host this project live, use a PHP-compatible host:
-
-- [InfinityFree](https://infinityfree.net/) — free PHP + MySQL hosting
-- [000webhost](https://www.000webhost.com/) — free tier available
-- [Railway](https://railway.app/) — supports PHP via Docker
-- [Render](https://render.com/) — supports PHP apps
-
-Steps:
-1. Create a MySQL database on your host
-2. Import `database.sql`
-3. Update `config.php` with the host's DB credentials
-4. Upload all files via FTP or the host's file manager
-
----
-
 ## Project Structure
 
 ```
