@@ -58,6 +58,11 @@
         }
 
         try {
+            if (!supabase) {
+                errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">Application failed to load. Please refresh the page.</div>';
+                return;
+            }
+
             var result = await supabase
                 .from('app_user')
                 .select('username')
@@ -71,11 +76,16 @@
             if (data) {
                 sessionStorage.setItem('csm_user', data.username);
                 window.location.href = 'home.html';
+            } else if (error && error.code === 'PGRST116') {
+                // No rows returned - invalid credentials
+                errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">Please enter correct user name and password</div>';
+            } else if (error) {
+                errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">Service error: ' + error.message + '</div>';
             } else {
                 errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">Please enter correct user name and password</div>';
             }
         } catch (err) {
-            errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">Service is temporarily unavailable</div>';
+            errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">Service is temporarily unavailable: ' + err.message + '</div>';
         }
     }
 </script>

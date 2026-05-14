@@ -13,7 +13,13 @@ const SUPABASE_URL = 'https://mvqzkhdosclvtmislkts.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12cXpraGRvc2NsdnRtaXNsa3RzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NDYxMjksImV4cCI6MjA5NDMyMjEyOX0.lZaKmjiiZomAkbmgtr5bptZngQqftJ_RS4IBQS3_wKQ';
 
 // Initialize Supabase client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// The CDN UMD bundle exposes window.supabase with createClient
+var supabase;
+if (window.supabase && window.supabase.createClient) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+    console.error('Supabase SDK not loaded. Make sure the CDN script tag is included before this file.');
+}
 
 /**
  * Get the currently logged-in username from session storage.
