@@ -59,7 +59,6 @@
 		
 		$now = time();
 		$update_time = date('Y/m/d H:i',$now);
-		echo $update_time;
 
 		$bo = $_POST['bo'];
 		$histo = $_POST['histories'];
@@ -68,8 +67,8 @@
 		$total_histories = htmlspecialchars(($total_history), ENT_QUOTES);
 		
 		
-		$sql     = "UPDATE `task` SET stat = '".$_POST["sta"]."', updt = '$updates', history = '$total_histories', esc_grp = '$esc_grp', end_t = '".$_POST["en_t"]."', severity = '$se', uuser = '$usr' WHERE task_ID = '$bo'";
-		var_dump($sql);$res 	 = mysqli_query($con, $sql); 
+		$sql = "UPDATE `task` SET stat = '".$_POST["sta"]."', updt = '$updates', history = '$total_histories', esc_grp = '$esc_grp', end_t = '".$_POST["en_t"]."', severity = '$se', uuser = '$usr' WHERE task_ID = '$bo'";
+		$res = mysqli_query($con, $sql);
                                     //or die("Could not update".mysqli_error());
 
 		$_SESSION['message'] = "Task Updated!";					
