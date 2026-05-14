@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Search by date</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="true">
+
+    <link rel="icon" href="images/logo.png">
+    <link rel="stylesheet" type="text/css" href="css/back.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="build/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<header>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="home.html"> Search Task </a>
+        </div>
+        <a href="#" onclick="logout()" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-log-in"></span>Logout</a>
+    </nav>
+</header>
+
+<body>
+    <div class="container">
+        <div class="input-group mb-3">
+            <input type="text" id="startdatepicker" class="form-control" placeholder="From">
+            <input type="text" id="lastdatepicker" class="form-control" placeholder="To">
+            <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary bg-dark text-white" type="button" id="searchBtn">Search by Date</button>
+            </div>
+        </div>
+
+        <h3 class="text-white"> All Tasks </h3>
+
+        <table id="projectSpreadsheet" class="table table-bordered table-hover">
+            <thead class="thead-dark text-sm-center">
+                <tr>
+                    <th>Task ID</th>
+                    <th>ST</th>
+                    <th>Task Name</th>
+                    <th>Escalation Group</th>
+                    <th>Escalation Time</th>
+                    <th>Mail Reference</th>
+                    <th>Task Update</th>
+                    <th>Status</th>
+                    <th>ET</th>
+                    <th>Severity</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody class="table-primary" id="tbodyid">
+            </tbody>
+        </table>
+
+        <a href="#" id="xx" class="btn btn-info float-right">Export Table data into Excel</a>
+    </div>
+
+    <!-- CDN Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+    <script src="build/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Local Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/app.js"></script>
+    <script src="export.js"></script>
+
+    <!-- Datetime Pickers Initialization -->
+    <script type="text/javascript">
+        $(function () {
+            $('#startdatepicker').datetimepicker();
+            $('#lastdatepicker').datetimepicker();
+        });
+    </script>
+
+    <!-- Page Logic -->
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auth guard
+            requireAuth();
+
+            // Load all tasks on page load (ordered by ST descending)
+            loadAllTasks();
+
+            // Search button handler
+            document.getElementById('searchBtn').addEventListener('click', function () {
+                handleSearch();
+            });
+        });
+
+        /**
+         * Load all tasks ordered by ST descending (default view).
+         */
+        async function loadAllTasks() {
+            var { data, error } = await supabase
+                .from('task')
+                .select('*')
+                .order('st', { ascending: false });
+
+            if (error) {
+                showError('Could not load tasks. Please try again.');
+                return;
+            }
+
+            renderResults(data);
+        }
+
+        /**
+         * Handle search button click — validate dates and query Supabase.
+         */
+        async function handleSearch() {
+            var startDate = document.getElementById('startdatepicker').value.trim();
+            var endDate = document.getElementById('lastdatepicker').value.trim();
+
+            // Validation: both required if either provided
+            if ((startDate && !endDate) || (!startDate && endDate)) {
+                showError('Both start date and end date are required.');
+                return;
+            }
+
+            // If both empty, show all tasks
+            if (!startDate && !endDate) {
+                loadAllTasks();
+                return;
+            }
+
+            // Validation: start date must be on or before end date
+            if (new Date(startDate) > new Date(endDate)) {
+                showError('Start date must be on or before the end date.');
+                return;
+            }
+
+            // Query with date range filter
+            var { data, error } = await supabase
+                .from('task')
+                .select('*')
+                .gte('st', startDate)
+                .lte('st', endDate)
+                .order('st', { ascending: false });
+
+            if (error) {
+                showError('Search failed. Please try again.');
+                return;
+            }
+
+            renderResults(data);
+        }
+
+        /**
+         * Render search results into the table body.
+         * @param {Array} tasks - Array of task objects from Supabase
+         */
+        function renderResults(tasks) {
+            var tbody = document.getElementById('tbodyid');
+            tbody.innerHTML = '';
+
+            if (!tasks || tasks.length === 0) {
+                return;
+            }
+
+            tasks.forEach(function (task) {
+                var tr = document.createElement('tr');
+                tr.className = 'text-center';
+                tr.innerHTML =
+                    '<td>' + escapeHtml(task.task_id || '') + '</td>' +
+                    '<td>' + escapeHtml(task.st || '') + '</td>' +
+                    '<td>' + escapeHtml(task.task_name || '') + '</td>' +
+                    '<td>' + escapeHtml(task.esc_grp || '') + '</td>' +
+                    '<td>' + escapeHtml(task.esc_time || '') + '</td>' +
+                    '<td>' + escapeHtml(task.mail_ref || '') + '</td>' +
+                    '<td>' + escapeHtml(task.updt || '') + '</td>' +
+                    '<td>' + escapeHtml(task.stat || '') + '</td>' +
+                    '<td>' + escapeHtml(task.end_t || '') + '</td>' +
+                    '<td>' + escapeHtml(task.severity || '') + '</td>' +
+                    '<td>' + escapeHtml(getDisplayUser(task)) + '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        /**
+         * Escape HTML special characters to prevent XSS.
+         * @param {string} text - Raw text to escape
+         * @returns {string} Escaped text safe for innerHTML
+         */
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(text));
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Search by name</title>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="HandheldFriendly" content="true">
+
+	<link rel="icon" href="images/logo.png">
+	<link rel="stylesheet" type="text/css" href="css/back.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<header>
+	<nav class="navbar navbar-dark bg-primary">
+		<div class="container">
+			<a class="navbar-brand" href="home.html"> Search Task </a>
+		</div>
+		<a href="#" onclick="logout()" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-log-in"></span>Logout</a>
+	</nav>
+</header>
+
+<body>
+	<div class="container">
+		<div class="input-group mb-3">
+			<input type="text" id="searchKeyword" class="form-control" placeholder="Enter task name keyword" maxlength="200" aria-label="Task name keyword">
+			<div class="input-group-prepend">
+				<button class="btn btn-outline-secondary bg-dark text-white" type="button" id="searchBtn">Search by Name</button>
+			</div>
+		</div>
+
+		<h3 class="text-white"> All Tasks </h3>
+		<a id="xx" href="#" role="button">Export Table data into Excel</a>
+		<table class="table table-bordered table-hover" id="projectSpreadsheet">
+			<thead class="thead-dark text-sm-center">
+				<tr>
+					<th>Task ID</th>
+					<th>ST</th>
+					<th>Task Name</th>
+					<th>Escalation Group</th>
+					<th>Escalation Time</th>
+					<th>Mail Reference</th>
+					<th>Task Update</th>
+					<th>Status</th>
+					<th>ET</th>
+					<th>Severity</th>
+					<th>User</th>
+				</tr>
+			</thead>
+			<tbody id="taskTableBody" class="table-primary">
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Supabase SDK -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<!-- Local scripts -->
+	<script src="js/supabase-config.js"></script>
+	<script src="js/app.js"></script>
+	<!-- CDN scripts -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<!-- Export -->
+	<script src="export.js"></script>
+
+	<script>
+		// Auth guard
+		requireAuth();
+
+		/**
+		 * Render search results into the table body.
+		 * @param {Array} tasks - Array of task objects from Supabase
+		 */
+		function renderSearchResults(tasks) {
+			var tbody = document.getElementById('taskTableBody');
+			tbody.innerHTML = '';
+
+			if (!tasks || tasks.length === 0) {
+				return;
+			}
+
+			tasks.forEach(function(task) {
+				var tr = document.createElement('tr');
+				tr.className = 'text-center';
+				tr.innerHTML =
+					'<td>' + (task.task_id || '') + '</td>' +
+					'<td>' + (task.st || '') + '</td>' +
+					'<td>' + (task.task_name || '') + '</td>' +
+					'<td>' + (task.esc_grp || '') + '</td>' +
+					'<td>' + (task.esc_time || '') + '</td>' +
+					'<td>' + (task.mail_ref || '') + '</td>' +
+					'<td>' + (task.updt || '') + '</td>' +
+					'<td>' + (task.stat || '') + '</td>' +
+					'<td>' + (task.end_t || '') + '</td>' +
+					'<td>' + (task.severity || '') + '</td>' +
+					'<td>' + getDisplayUser(task) + '</td>';
+				tbody.appendChild(tr);
+			});
+		}
+
+		/**
+		 * Search tasks by name keyword using Supabase ilike query.
+		 * If keyword is empty, returns all tasks ordered by task_id descending.
+		 * @param {string} keyword - The search keyword
+		 */
+		async function searchByName(keyword) {
+			var query = supabase
+				.from('task')
+				.select('*')
+				.order('task_id', { ascending: false });
+
+			if (keyword && keyword.trim().length > 0) {
+				query = query.ilike('task_name', '%' + keyword.trim() + '%');
+			}
+
+			var result = await query;
+			var data = result.data;
+			var error = result.error;
+
+			if (error) {
+				showError('Search could not be completed.');
+				return;
+			}
+
+			renderSearchResults(data);
+		}
+
+		// On page load: display all tasks ordered by task_id descending
+		searchByName('');
+
+		// Search button click handler
+		document.getElementById('searchBtn').addEventListener('click', function() {
+			var keyword = document.getElementById('searchKeyword').value;
+			searchByName(keyword);
+		});
+
+		// Allow Enter key to trigger search
+		document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+			if (e.key === 'Enter') {
+				var keyword = document.getElementById('searchKeyword').value;
+				searchByName(keyword);
+			}
+		});
+	</script>
+</body>
+</html>

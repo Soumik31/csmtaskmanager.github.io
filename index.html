@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="true">
+    <title>Login</title>
+    <link rel="icon" href="images/logo.png">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/lightbox.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="loginbox">
+    <img src="images/logo1.png" class="avatar" alt="CSM Logo">
+    <h1>CSM Task Manager</h1>
+
+    <div id="error-message"></div>
+
+    <form id="login-form">
+        <p>Username</p>
+        <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username">
+        <p>Password</p>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password">
+        <input type="submit" name="Login" value="Login">
+    </form>
+</div>
+
+<script src="js/supabase-config.js"></script>
+<script src="js/app.js"></script>
+<script>
+    // If user is already authenticated, redirect to dashboard
+    if (sessionStorage.getItem('csm_user')) {
+        window.location.href = 'home.html';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleLogin();
+    });
+
+    async function handleLogin() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        var errorDiv = document.getElementById('error-message');
+
+        // Clear previous error
+        errorDiv.innerHTML = '';
+
+        // Validate non-empty, non-whitespace inputs
+        if (!username.trim() || !password.trim()) {
+            errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">You cannot login with an empty input</div>';
+            return;
+        }
+
+        try {
+            var result = await supabase
+                .from('app_user')
+                .select('username')
+                .eq('username', username)
+                .eq('password', password)
+                .single();
+
+            var data = result.data;
+            var error = result.error;
+
+            if (data) {
+                sessionStorage.setItem('csm_user', data.username);
+                window.location.href = 'home.html';
+            } else {
+                errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">Please enter correct user name and password</div>';
+            }
+        } catch (err) {
+            errorDiv.innerHTML = '<div style="color: red; text-align: center; margin-bottom: 10px;">Service is temporarily unavailable</div>';
+        }
+    }
+</script>
+
+</body>
+</html>
