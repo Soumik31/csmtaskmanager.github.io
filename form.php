@@ -50,10 +50,8 @@
 		$q = "INSERT INTO task (task_ID, ST, task_name, esc_grp, esc_time, severity, stat, end_t, mail_ref, history, updt, user) 
 		VALUES ('$id','".$_POST["ST"]."','$task_name','$esc_grp','".$_POST["esc_time"]."','".$_POST["severity"]."', '".$_POST["sta"]."', '".$_POST["en_t"]."' ,'$mail_reference', '$history', '$updates','$usr')" ;	
 		
-		var_dump($q);
-		
 		$query = mysqli_query($con,$q)
-					or die("Could not update".mysqli_error());
+					or die("Could not update: " . mysqli_error($con));
 									
 		$_SESSION['message'] = "Task Updated!";					
 		$_SESSION['msg_type'] = "warning";				
