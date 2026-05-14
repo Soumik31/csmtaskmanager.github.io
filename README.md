@@ -1,94 +1,75 @@
 # CSM Task Manager
 
-A PHP/MySQL web app for managing and tracking operational tasks. Supports task creation, editing, status updates, search by name/date, and CSV export.
+🌐 **Live Demo:** [https://soumik31.github.io/csmtaskmanager.github.io/](https://soumik31.github.io/csmtaskmanager.github.io/)
 
-## Features
+A task management web application used by the CSM (Customer Service Management) SOC team to track, escalate, and resolve network incidents in real-time. Features live pending-time calculations, task history logging, search by date/name, and CSV export.
 
-- Login with session-based auth
-- Create, edit, and close tasks
-- Search tasks by name or date range
-- Export task table to CSV
-- Pending task count badge on home screen
-- Expandable task history per row
+---
 
 ## Tech Stack
 
-- PHP 7+
-- MySQL / MariaDB
-- Bootstrap 4
-- jQuery
+- HTML5 / CSS3 / JavaScript (ES6+)
+- Supabase (PostgreSQL backend + REST API)
+- Bootstrap 4.3
+- jQuery 3.x
+- Moment.js + Bootstrap Datetimepicker
+
+Hosted on **GitHub Pages** with **Supabase** as the backend database.
 
 ---
 
-## Local Setup
+## Live Demo
 
-### 1. Requirements
+Visit the live site: **[https://soumik31.github.io/csmtaskmanager.github.io/](https://soumik31.github.io/csmtaskmanager.github.io/)**
 
-- PHP 7.3+
-- MySQL or MariaDB
-- A local server: [XAMPP](https://www.apachefriends.org/) / [WAMP](https://www.wampserver.com/) / [Laragon](https://laragon.org/)
+### Login Credentials
 
-### 2. Database
-
-Import the provided SQL file into MySQL:
-
-```bash
-mysql -u root -p < database.sql
-```
-
-Or open `database.sql` in phpMyAdmin and run it.
-
-### 3. Configuration
-
-Edit `config.php` with your database credentials:
-
-```php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'csm_task_creater');
-```
-
-You can also set these as environment variables instead.
-
-### 4. Run
-
-Place the project folder inside your server's web root (e.g. `htdocs/` for XAMPP) and open:
-
-```
-http://localhost/csm-task-manager/
-```
+| Username | Password  |
+|----------|-----------|
+| admin    | admin123  |
+| john.doe | pass1234  |
+| jane.smith | pass5678 |
 
 ---
 
-## Demo Login
+## Features
 
-| Username    | Password  |
-|-------------|-----------|
-| admin       | admin123  |
-| john.doe    | pass1234  |
-| jane.smith  | pass5678  |
+- **User Authentication** — Login/logout with session management
+- **Dashboard** — View all pending tasks with live pending-time calculation (auto-refreshes every 60s)
+- **Create Task** — 80+ predefined task names, 50+ escalation groups, severity levels, datetime pickers
+- **Edit Task** — Update status, escalation group, severity, add history notes
+- **Search by Date** — Filter tasks by date range
+- **Search by Name** — Filter tasks by keyword
+- **History Tracking** — Expandable history log for each task showing all updates
+- **CSV Export** — Export search results to CSV file
 
 ---
 
 ## Project Structure
 
 ```
-├── index.php          # Login page
-├── process.php        # Login handler
-├── home.php           # Dashboard - pending tasks
-├── form.php           # Create task
-├── action.php         # Edit task
-├── searchname.php     # Search by task name
-├── searchdate.php     # Search by date range
-├── conn.php           # DB connection (uses config.php)
-├── loginconn.php      # DB connection for login
-├── config.php         # DB credentials (edit this)
-├── mail.php           # Email report script (optional)
-├── database.sql       # Full DB schema + demo data
-├── export.js          # CSV export logic
-├── css/               # Stylesheets
-├── js/                # Scripts
-├── images/            # Logo and background
-└── build/             # Datetimepicker assets
+/
+├── index.html              # Login page
+├── home.html               # Dashboard (pending tasks)
+├── form.html               # Create new task
+├── action.html             # Edit existing task
+├── searchdate.html         # Search by date range
+├── searchname.html         # Search by name keyword
+├── export.js               # CSV export module
+├── js/
+│   ├── supabase-config.js  # Supabase client + auth utilities
+│   └── app.js              # Shared utility functions
+├── css/                    # Stylesheets
+├── build/                  # Datetimepicker assets
+├── images/                 # Logo and background
+└── fonts/                  # Glyphicons
 ```
+
+---
+
+## Notes
+
+- Passwords are stored in plaintext — this is a portfolio/demo project
+- Backend powered by Supabase (PostgreSQL + REST API)
+- No server-side code required — runs entirely as static files on GitHub Pages
+- Originally built as a PHP/MySQL application for Grameenphone CSM SOC team, converted to static for GitHub Pages hosting
