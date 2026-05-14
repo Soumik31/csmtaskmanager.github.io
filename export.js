@@ -1,56 +1,63 @@
-$(document).ready(function () {
+/**
+ * CSV Export Module
+ * Exports the rendered HTML table (#projectSpreadsheet) to a CSV file download.
+ * No jQuery dependency — uses vanilla JS only.
+ */
 
-	function exportTableToCSV($table, filename) {
-    
-        var $rows = $table.find('tr:has(td),tr:has(th)'),
-    
-            // Temporary delimiter characters unlikely to be typed by keyboard
-            // This is to avoid accidentally splitting the actual contents
-            tmpColDelim = String.fromCharCode(11), // vertical tab character
-            tmpRowDelim = String.fromCharCode(0), // null character
-    
-            // actual delimiter characters for CSV format
-            colDelim = '","',
-            rowDelim = '"\r\n"',
-    
-            // Grab text from table into CSV formatted string
-            csv = '"' + $rows.map(function (i, row) {
-                var $row = $(row), $cols = $row.find('td,th');
-    
-                return $cols.map(function (j, col) {
-                    var $col = $(col), text = $col.text();
-    
-                    return text.replace(/"/g, '""'); // escape double quotes
-    
-                }).get().join(tmpColDelim);
-    
-            }).get().join(tmpRowDelim)
-                .split(tmpRowDelim).join(rowDelim)
-                .split(tmpColDelim).join(colDelim) + '"',
-    
-            
-    
-            // Data URI
-            csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
-            
-            console.log(csv);
-            
-        	if (window.navigator.msSaveBlob) { // IE 10+
-        		//alert('IE' + csv);
-        		window.navigator.msSaveOrOpenBlob(new Blob([csv], {type: "text/plain;charset=utf-8;"}), "csvname.csv")
-        	} 
-        	else {
-        		$(this).attr({ 'download': filename, 'href': csvData, 'target': '_blank' }); 
-        	}
+function exportTableToCSV(tableId, filename) {
+    var table = document.getElementById(tableId);
+    if (!table) {
+        return;
     }
-    
-    // This must be a hyperlink
-    $("#xx").on('click', function (event) {
-    	
-        exportTableToCSV.apply(this, [$('#projectSpreadsheet'), 'csm_task.csv']);
-        
-        // IF CSV, don't do event.preventDefault() or return false
-        // We actually need this to be a typical hyperlink
+
+    var rows = table.querySelectorAll('tr');
+    var csvRows = [];
+
+    rows.forEach(function (row) {
+        var cols = row.querySelectorAll('td, th');
+        if (cols.length === 0) {
+            return;
+        }
+
+        var rowData = [];
+        cols.forEach(function (col) {
+            var text = col.textContent.trim();
+            // Escape double quotes by doubling them, then wrap in double quotes
+            rowData.push('"' + text.replace(/"/g, '""') + '"');
+        });
+
+        csvRows.push(rowData.join(','));
     });
 
+    var csv = csvRows.join('\r\n');
+
+    // Add trailing CRLF if there is content
+    if (csv.length > 0) {
+        csv += '\r\n';
+    }
+
+    var blob = new Blob([csv], { type: 'application/csv;charset=utf-8;' });
+    var link = document.createElement('a');
+    var url = URL.createObjectURL(blob);
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var exportLink = document.getElementById('xx');
+    if (exportLink) {
+        exportLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            exportTableToCSV('projectSpreadsheet', 'csm_task.csv');
+        });
+    }
 });
